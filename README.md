@@ -8,11 +8,38 @@ Each font in the Hind family has 1146 glyphs, which include hundreds of unique D
 
 Manushi Parikh designed Hind for the Indian Type Foundry, who first published the fonts in 2014.
 
-## Code base
+## Sources
 
-This working directory is forked from the common code base, [ITF Base Devanagari (for Google Fonts)](https://github.com/itfoundry/base-devanagari-gf).
+`masters/Hind.glyphs` is the source: two masters (Light, Bold) on a Weight axis and five instances. It was converted from the 2014 UFO masters by `toolchain/migrate_ufo_to_glyphs.py`. Those UFOs, the FontLab `.vfb` files, and the rest of the 2014 Python 2 build are kept in `legacy/`.
 
-## Dependencies
+OpenType features are written by hand in `features/` (`GSUB.fea`, `GSUB_prefixing.fea`, `classes_suffixing.fea`). Mark positioning, the mI variant matching, and the OS/2, hhea, and name tables are generated at build time by hindkit.
 
-- [Adobe Font Development Kit for OpenType](http://www.adobe.com/devnet/opentype/afdko.html) (AFDKO), version 2.5 build 63209 (Sep 18 2014) or newer.
-- A script [`UFOInstanceGenerator.py`](https://github.com/adobe-type-tools/python-scripts/blob/master/FDK%20Extras/UFOInstanceGenerator.py) (to be placed in AFDKO’s directory `FDK/Tools/osx`) and two [modules](https://github.com/adobe-type-tools/python-modules) (to be placed in Python’s `site-packages` directory) from Adobe.
+## Building
+
+Requires Python 3.10 or newer.
+
+```bash
+python3 -m venv .venv
+```
+
+```bash
+.venv/bin/pip install afdko glyphsLib defcon fontTools
+```
+
+```bash
+.venv/bin/python build.py
+```
+
+The build exports UFO masters from `Hind.glyphs` into `build/masters`, interpolates the five instances with AFDKO's `makeinstancesufo`, and compiles OTFs with `makeotf`. Working files go to `intermediates/`, and the OTFs to `intermediates/products/Hind-<version>-OTF/`. `products/` gets a zip of the OTFs and TTX dumps, as ITF's Google Fonts builds did. `build.py --test` builds only the two master styles, skipping interpolation and overlap removal.
+
+The build system is ITF's [hindkit](https://github.com/itfoundry/hindkit), vendored as a git subtree in `toolchain/hindkit` and patched for current AFDKO. See `toolchain/README.md`.
+
+### Matching the 2014 fonts
+
+The build reproduces the 2014 Google Fonts release. Across a 19,417-string Devanagari and Latin shaping test, Regular, Medium, SemiBold, and Bold shape identically to the 2014 OTFs, with the same glyph set, advance widths, and outlines. Getting there needed three things, all options in `build.py`:
+
+- `round_like_python2`: instances are rounded half away from zero, as the 2014 Python 2 tools did, not half to even.
+- `correct_contour_direction`: 33 Latin glyphs are drawn clockwise in the masters. The 2014 `checkoutlines` fixed this; current `checkoutlinesufo` does not.
+- The 2014 mI matching rule (nearest variant) and its hand-made base list replace hindkit's defaults.
+
+Known difference: in Light, क़्फ़ (`dvKx_PHxA`) gets a different mI variant and a positioned ु. That glyph has anchors only in the Light master. The 2014 instancer dropped them; the current one keeps them in Light. Thirteen glyphs have anchors that differ between the masters.

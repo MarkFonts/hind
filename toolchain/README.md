@@ -1,6 +1,18 @@
 # Toolchain
 
-Everything the 2014 Hind build touched, plus ITF's later build system, gathered for a toolchain update. Nothing here has been run yet.
+Everything the 2014 Hind build touched, plus ITF's later build system. Hind now builds with `hindkit/` and current AFDKO (see `../build.py` and the top-level README); the rest is kept for reference.
+
+## Local patches to hindkit
+
+`hindkit/` is a subtree of itfoundry/hindkit with these changes, needed for AFDKO 5 and to match the 2014 fonts:
+
+- `objects/family.py`: the designspace is written with `fontTools.designspaceLib`, with real axes. AFDKO 5's `makeinstancesufo` rejects MutatorMath's axis-less format.
+- `objects/font.py`: `updateInstance(path, options)`; AFDKO 5 swapped the arguments.
+- `objects/family.py`, `objects/project.py`: two new options, both off by default.
+  - `round_like_python2`: interpolate unrounded, then round half away from zero, as the Python 2 FDK did. Widths are re-interpolated from the masters, because `makeinstancesufo` rounds them half to even even with `-r`.
+  - `correct_contour_direction`: run defcon's `correctContourDirection` on each instance. The 2014 `checkoutlines` did this; `checkoutlinesufo` does not.
+
+`migrate_ufo_to_glyphs.py` converted the 2014 UFO masters to `masters/Hind.glyphs` (one-time).
 
 ## What the original build needs
 

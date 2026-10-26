@@ -471,7 +471,7 @@ class Product(BaseFont):
                                 writeModTimes=False)
             if options.doOverlapRemoval or options.doAutoHint:
                 logger.info("Applying post-processing...")
-                updateInstance(options, instancePath)
+                updateInstance(instancePath, options)
             if not options.doOverlapRemoval:
                 validateLayers(instancePath)
             if options.doOverlapRemoval or options.doAutoHint:
