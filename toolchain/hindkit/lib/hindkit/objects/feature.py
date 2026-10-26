@@ -340,7 +340,7 @@ class FeatureNameExtension(BaseFeature):
             for k, v in [
                 (3, "{}; {}; {}".format(vender_id, full_name, version_string)),
                 (4, full_name),
-                (5, version_string)
+                (5, "Version {}".format(version_string)),  # the OpenType spec wants "Version " first
             ]:
                 f.write("nameid {} \"{}\";\n".format(k, v))
 
