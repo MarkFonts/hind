@@ -91,14 +91,6 @@ class Family(object):
             for style in styles:
                 style.prepare(whole_directory=True)
 
-        if p.options["correct_contour_direction"]:
-            for style in styles:
-                font = style.open()
-                for glyph in font:
-                    if len(glyph):
-                        glyph.correctContourDirection()
-                style.dirty = True
-
         for style in styles:
             if hasattr(style, "postprocess"):
                 style.postprocess()

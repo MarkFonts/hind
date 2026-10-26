@@ -10,7 +10,7 @@ Everything the 2014 Hind build touched, plus ITF's later build system. Hind now 
 - `objects/font.py`: `updateInstance(path, options)`; AFDKO 5 swapped the arguments.
 - `objects/family.py`, `objects/project.py`: two new options, both off by default.
   - `round_like_python2`: interpolate unrounded, then round half away from zero, as the Python 2 FDK did. Widths are re-interpolated from the masters, because `makeinstancesufo` rounds them half to even even with `-r`.
-  - `correct_contour_direction`: run defcon's `correctContourDirection` on each instance. The 2014 `checkoutlines` did this; `checkoutlinesufo` does not.
+  - `correct_contour_direction`: run defcon's `correctContourDirection` on each instance after overlap removal, as the 2014 `checkoutlines` did; `checkoutlinesufo` does not. It works on the overlap-free outlines that `checkoutlinesufo` writes to the `com.adobe.type.processedglyphs` layer. The default layer stays as it is, because `makeotf` checks it against the hashes `checkoutlinesufo` stored and silently writes nothing if they differ. Run before overlap removal, defcon takes a stroke that crosses a counter for a counter itself and reverses it. In [Hind Siliguri](https://github.com/MarkFonts/hind-siliguri), that cut white slivers into 18 ষ conjuncts. In Hind the move changes no winding, widths, or shaping; overlap removal rounds 5 to 8 round Latin glyphs per weight (`six`, `at`, `Euro`) differently, by at most 150 units of area.
 
 `migrate_ufo_to_glyphs.py` converted the 2014 UFO masters to `masters/Hind.glyphs` (one-time).
 
