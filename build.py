@@ -52,7 +52,7 @@ def main():
 
     project = hindkit.Project(
         family,
-        fontrevision = "2.001",
+        fontrevision = "2.002",
         options = {
             "prepare_mark_positioning": True,
             "match_mI_variants": 1,

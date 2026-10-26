@@ -36,7 +36,9 @@ The build system is ITF's [hindkit](https://github.com/itfoundry/hindkit), vendo
 
 ### Matching the 2014 fonts
 
-The build reproduces the 2014 Google Fonts release. Across a 19,417-string Devanagari and Latin shaping test, Regular, Medium, SemiBold, and Bold shape identically to the 2014 OTFs, with the same glyph set, advance widths, and outlines. Getting there needed three things, all options in `build.py`:
+This build is version 2.002. Google Fonts serves 2.001, a 2017 hotfix ([google/fonts#890](https://github.com/google/fonts/pull/890)) of the 2014 fonts: TTFs with ttfautohint and vertical metrics of 1055/−546/0 (hhea and typo) and 1055/546 (win). This build keeps the 2014 metrics (1050/−350/100, win 1100/400) for now.
+
+The build reproduces the 2014 release. Across a 19,417-string Devanagari and Latin shaping test, Regular, Medium, SemiBold, and Bold shape identically to the 2014 OTFs, with the same glyph set, advance widths, and outlines. Getting there needed three things, all options in `build.py`:
 
 - `round_like_python2`: instances are rounded half away from zero, as the 2014 Python 2 tools did, not half to even.
 - `correct_contour_direction`: 33 Latin glyphs are drawn clockwise in the masters. The 2014 `checkoutlines` fixed this; current `checkoutlinesufo` does not.
